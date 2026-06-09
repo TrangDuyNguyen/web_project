@@ -1,0 +1,9 @@
+{
+  "name": "monopoly-game",
+  "main": "partykit/src/game.ts",
+  "compatibilityDate": "2024-01-01",
+  "parties": {
+    "game": "partykit/src/game.ts",
+    "lobby": "partykit/src/lobby.ts"
+  }
+}
