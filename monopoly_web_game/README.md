@@ -24,10 +24,43 @@ npm run test
 
 Copy `.env.local.example` to `.env.local`.
 
+## E2E Smoke Test
+
+With both dev servers running:
+
+```bash
+npm run e2e:smoke
+```
+
 ## Deploy
 
-1. **PartyKit:** `npm run partykit:deploy`
-2. **Vercel:** Connect repo, set `NEXT_PUBLIC_PARTYKIT_HOST` to your PartyKit host
+### 1. PartyKit (game server)
+
+```bash
+npx partykit login          # first time only
+npm run partykit:deploy
+# Note the deployed host, e.g. monopoly-game.<user>.partykit.dev
+```
+
+### 2. Vercel (frontend)
+
+```bash
+npx vercel login            # first time only
+npx vercel --cwd monopoly_web_game
+```
+
+Set environment variables in Vercel dashboard:
+
+| Variable | Example |
+|---|---|
+| `NEXT_PUBLIC_PARTYKIT_HOST` | `monopoly-game.username.partykit.dev` |
+| `NEXT_PUBLIC_APP_URL` | `https://your-app.vercel.app` |
+
+### 3. Production smoke test
+
+1. Open deployed URL
+2. Create room → join from second browser/incognito
+3. Start game → roll dice
 
 ## Docs
 

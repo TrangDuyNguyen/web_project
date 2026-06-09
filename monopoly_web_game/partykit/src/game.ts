@@ -132,11 +132,16 @@ export default class GameServer implements Party.Server {
       createdAt: Date.now(),
     };
     const hostEnv = process.env.NEXT_PUBLIC_PARTYKIT_HOST ?? 'localhost:1999';
-    const protocol = hostEnv.startsWith('localhost') ? 'http' : 'https';
+    const protocol = hostEnv.startsWith('localhost') ? 'ws' : 'wss';
     try {
-      await fetch(`${protocol}://${hostEnv}/parties/lobby/lobby`, {
-        method: 'POST',
-        body: JSON.stringify({ type: 'register', room: summary }),
+      const ws = new WebSocket(`${protocol}://${hostEnv}/parties/lobby/lobby`);
+      await new Promise<void>((resolve, reject) => {
+        ws.addEventListener('open', () => {
+          ws.send(JSON.stringify({ type: 'register', room: summary }));
+          ws.close();
+          resolve();
+        });
+        ws.addEventListener('error', reject);
       });
     } catch {
       // lobby registration is best-effort in dev
@@ -145,11 +150,16 @@ export default class GameServer implements Party.Server {
 
   async unregisterFromLobby() {
     const hostEnv = process.env.NEXT_PUBLIC_PARTYKIT_HOST ?? 'localhost:1999';
-    const protocol = hostEnv.startsWith('localhost') ? 'http' : 'https';
+    const protocol = hostEnv.startsWith('localhost') ? 'ws' : 'wss';
     try {
-      await fetch(`${protocol}://${hostEnv}/parties/lobby/lobby`, {
-        method: 'POST',
-        body: JSON.stringify({ type: 'unregister', roomId: this.room.id }),
+      const ws = new WebSocket(`${protocol}://${hostEnv}/parties/lobby/lobby`);
+      await new Promise<void>((resolve, reject) => {
+        ws.addEventListener('open', () => {
+          ws.send(JSON.stringify({ type: 'unregister', roomId: this.room.id }));
+          ws.close();
+          resolve();
+        });
+        ws.addEventListener('error', reject);
       });
     } catch {
       // best-effort

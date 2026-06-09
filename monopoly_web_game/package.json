@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "partykit:dev": "partykit dev",
-    "partykit:deploy": "partykit deploy"
+    "partykit:deploy": "partykit deploy",
+    "e2e:smoke": "node scripts/e2e-smoke.mjs"
   },
   "dependencies": {
     "framer-motion": "^12.40.0",
