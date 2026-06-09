@@ -1,0 +1,11 @@
+export const STARTING_MONEY = 1500;
+export const GO_BONUS = 200;
+export const JAIL_FINE = 50;
+export const MAX_JAIL_TURNS = 3;
+export const BOARD_SIZE = 40;
+export const JAIL_POSITION = 10;
+export const GO_POSITION = 0;
+export const DISCONNECT_TIMEOUT_MS = 180_000;
+export const MAX_EVENT_LOG = 50;
+export const PLAYER_COLORS = ['#EF4444', '#3B82F6', '#22C55E', '#EAB308'] as const;
+export const MAX_DOUBLES_BEFORE_JAIL = 3;
