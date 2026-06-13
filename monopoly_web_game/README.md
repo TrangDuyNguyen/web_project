@@ -2,7 +2,7 @@
 
 Game Cờ Tỷ Phú trên trình duyệt — 2–4 người chơi online realtime.
 
-**Phase 2:** Bắt buộc đăng nhập OAuth (Google, GitHub, Facebook). Chế độ guest đã bỏ.
+**Phase 2 ✅ Hoàn thành:** OAuth bắt buộc (Google, GitHub, Facebook). Chế độ guest đã bỏ.
 
 ## Tech Stack
 
@@ -64,6 +64,19 @@ Production:
 ```bash
 AUTH_SECRET=<prod-secret> NEXT_PUBLIC_PARTYKIT_HOST=monopoly-game.<user>.partykit.dev npm run e2e:smoke
 ```
+
+## Phase 2 Verification
+
+Full auth + WebSocket + game-flow checks (12 automated tests):
+
+```bash
+AUTH_SECRET=<prod-secret> \
+NEXT_PUBLIC_PARTYKIT_HOST=monopoly-game.<user>.partykit.dev \
+NEXT_PUBLIC_APP_URL=https://monopolywebgame.vercel.app \
+npm run verify:phase2
+```
+
+Manual test cases: `docs/superpowers/plans/2026-06-09-monopoly-auth-phase2-manual-tests.md`
 
 ## Deploy
 
