@@ -11,7 +11,8 @@
     "test:watch": "vitest",
     "partykit:dev": "partykit dev",
     "partykit:deploy": "partykit deploy",
-    "e2e:smoke": "node scripts/e2e-smoke.mjs"
+    "e2e:smoke": "node scripts/e2e-smoke.mjs",
+    "verify:phase2": "node scripts/phase2-verify.mjs"
   },
   "dependencies": {
     "framer-motion": "^12.40.0",
