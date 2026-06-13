@@ -1,27 +1,45 @@
 /**
- * Smoke test: create room via API, join 2 players via WebSocket, start game, roll dice.
- * Local: npm run dev + npm run partykit:dev
- * Production: NEXT_PUBLIC_APP_URL=... NEXT_PUBLIC_PARTYKIT_HOST=... node scripts/e2e-smoke.mjs
+ * Smoke test: init room on PartyKit, join 2 players via JWT WebSocket, start game, roll dice.
+ * Local: npm run partykit:dev (AUTH_SECRET in partykit.json)
+ * Env: AUTH_SECRET, NEXT_PUBLIC_PARTYKIT_HOST
  */
-const APP = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+import { SignJWT } from 'jose';
+
+const SECRET = process.env.AUTH_SECRET ?? 'dev-secret-change-in-production-min-32-chars';
 const PK = process.env.NEXT_PUBLIC_PARTYKIT_HOST ?? 'localhost:1999';
 const wsProtocol = PK.startsWith('localhost') ? 'ws' : 'wss';
+const httpProtocol = PK.startsWith('localhost') ? 'http' : 'https';
 
-const res = await fetch(`${APP}/api/rooms`, {
+const roomId = crypto.randomUUID().slice(0, 6).toUpperCase();
+const hostUserId = 'google:host-smoke-test';
+const guestUserId = 'github:guest-smoke-test';
+
+async function mintToken({ sub, displayName, color, isHost }) {
+  const key = new TextEncoder().encode(SECRET);
+  const now = Math.floor(Date.now() / 1000);
+  return new SignJWT({ roomId, displayName, color, ...(isHost ? { isHost: true } : {}) })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setSubject(sub)
+    .setIssuedAt(now)
+    .setExpirationTime(now + 300)
+    .sign(key);
+}
+
+const initRes = await fetch(`${httpProtocol}://${PK}/parties/game/${roomId}`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ visibility: 'private', maxPlayers: 4 }),
+  body: JSON.stringify({
+    hostUserId,
+    visibility: 'private',
+    maxPlayers: 4,
+  }),
 });
-if (!res.ok) throw new Error(`API failed: ${res.status}`);
-const { roomId } = await res.json();
+if (!initRes.ok) throw new Error(`Room init failed: ${initRes.status}`);
 
-function connect(guestId, name, color, hostId) {
-  return new Promise((resolve, reject) => {
-    const params = new URLSearchParams({
-      guestId, displayName: name, color, hostId,
-      visibility: 'private', maxPlayers: '4', roomCode: roomId,
-    });
-    const ws = new WebSocket(`${wsProtocol}://${PK}/parties/game/${roomId}?${params}`);
+function connect(userId, name, color, isHost) {
+  return new Promise(async (resolve, reject) => {
+    const token = await mintToken({ sub: userId, displayName: name, color, isHost });
+    const ws = new WebSocket(`${wsProtocol}://${PK}/parties/game/${roomId}?token=${encodeURIComponent(token)}`);
     let lastState = null;
     ws.addEventListener('open', () => resolve({ ws, getState: () => lastState }));
     ws.addEventListener('error', reject);
@@ -32,10 +50,9 @@ function connect(guestId, name, color, hostId) {
   });
 }
 
-const hostId = crypto.randomUUID();
-const host = await connect(hostId, 'Host', '#EF4444', hostId);
+const host = await connect(hostUserId, 'Host', '#EF4444', true);
 await new Promise((r) => setTimeout(r, 800));
-const guest = await connect(crypto.randomUUID(), 'Guest', '#3B82F6', hostId);
+const guest = await connect(guestUserId, 'Guest', '#3B82F6', false);
 await new Promise((r) => setTimeout(r, 800));
 
 host.ws.send(JSON.stringify({ type: 'start_game' }));

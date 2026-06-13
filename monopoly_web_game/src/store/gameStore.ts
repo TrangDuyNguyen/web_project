@@ -6,14 +6,14 @@ type Toast = { id: string; message: string; type: 'error' | 'info' };
 
 type GameStore = {
   connectionStatus: 'connecting' | 'connected' | 'disconnected';
-  guestId: string;
+  userId: string;
   roomId: string | null;
   gameState: GameState | null;
   selectedTile: number | null;
   isEventLogExpanded: boolean;
   toasts: Toast[];
   socket: WebSocket | null;
-  setGuestId: (id: string) => void;
+  setUserId: (id: string) => void;
   setConnectionStatus: (s: GameStore['connectionStatus']) => void;
   setGameState: (state: GameState) => void;
   setSocket: (ws: WebSocket | null) => void;
@@ -26,14 +26,14 @@ type GameStore = {
 
 export const useGameStore = create<GameStore>((set, get) => ({
   connectionStatus: 'disconnected',
-  guestId: '',
+  userId: '',
   roomId: null,
   gameState: null,
   selectedTile: null,
   isEventLogExpanded: false,
   toasts: [],
   socket: null,
-  setGuestId: (id) => set({ guestId: id }),
+  setUserId: (id) => set({ userId: id }),
   setConnectionStatus: (s) => set({ connectionStatus: s }),
   setGameState: (state) => set({ gameState: state }),
   setSocket: (ws) => set({ socket: ws }),
@@ -44,6 +44,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   removeToast: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
   sendAction: (action) => {
     const ws = get().socket;
-    if (ws?.readyState === WebSocket.OPEN) ws.send(JSON.stringify(action));
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(action));
+      return;
+    }
+    get().addToast('Mất kết nối — vui lòng tải lại trang', 'error');
   },
 }));

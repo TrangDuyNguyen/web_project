@@ -1,14 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
 import { PLAYER_COLORS } from '@/game/rules/constants';
-import { useGuestId } from '@/hooks/useGuestId';
 
 export function CreateRoomForm() {
   const router = useRouter();
-  const guestId = useGuestId();
+  const { data: session } = useSession();
   const [displayName, setDisplayName] = useState('');
   const [color, setColor] = useState<string>(PLAYER_COLORS[0]);
   const [visibility, setVisibility] = useState<'private' | 'public'>('private');
@@ -16,9 +16,15 @@ export function CreateRoomForm() {
   const [roundLimit, setRoundLimit] = useState(20);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (session?.user?.name && !displayName) {
+      setDisplayName(session.user.name);
+    }
+  }, [session?.user?.name, displayName]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!displayName.trim() || !guestId) return;
+    if (!displayName.trim()) return;
     setLoading(true);
     const res = await fetch('/api/rooms', {
       method: 'POST',
@@ -29,9 +35,17 @@ export function CreateRoomForm() {
         roundLimit: useRoundLimit ? roundLimit : undefined,
       }),
     });
+    if (!res.ok) {
+      setLoading(false);
+      return;
+    }
     const data = await res.json();
-    sessionStorage.setItem(`room_${data.roomId}`, JSON.stringify({ displayName, color, roomCode: data.roomCode, visibility, roundLimit: useRoundLimit ? roundLimit : undefined }));
-    router.push(`/game/${data.roomId}`);
+    const params = new URLSearchParams({
+      isHost: 'true',
+      name: displayName.trim(),
+      color,
+    });
+    router.push(`/game/${data.roomId}?${params}`);
     setLoading(false);
   }
 

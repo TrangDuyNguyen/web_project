@@ -5,10 +5,10 @@ import { useGameStore } from '@/store/gameStore';
 import { PlayerList } from '@/components/Player/PlayerList';
 
 export function WaitingRoom() {
-  const { gameState, guestId, sendAction, addToast } = useGameStore();
+  const { gameState, userId, sendAction, addToast } = useGameStore();
   if (!gameState) return null;
 
-  const isHost = guestId === gameState.hostId;
+  const isHost = userId === gameState.hostId;
   const canStart = gameState.players.length >= 2;
 
   function copyLink() {
@@ -24,6 +24,14 @@ export function WaitingRoom() {
       </div>
       <p className="text-sm text-gray-600">Đang chờ người chơi... ({gameState.players.length}/{gameState.settings.maxPlayers})</p>
       <PlayerList state={gameState} />
+      {isHost && !canStart && (
+        <p className="text-sm text-amber-700 bg-amber-50 rounded-lg px-3 py-2">
+          Cần ít nhất 2 người chơi để bắt đầu. Mời bạn bè qua link hoặc phòng công khai.
+        </p>
+      )}
+      {!isHost && (
+        <p className="text-sm text-gray-500 text-center">Đang chờ host bắt đầu game...</p>
+      )}
       {isHost && (
         <Button
           className="w-full"
