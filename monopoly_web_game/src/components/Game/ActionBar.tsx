@@ -16,31 +16,72 @@ export function ActionBar() {
   const prop = tile?.propertyId ? PROPERTY_BY_POSITION[current.position] : null;
 
   return (
-    <div className="sticky bottom-0 bg-white border-t p-4 flex flex-wrap gap-2 justify-center">
-      {!isMyTurn && (
-        <p className="text-sm text-gray-500 w-full text-center">
-          Đang chờ {current?.displayName}...
-        </p>
-      )}
-      {isMyTurn && gameState.phase === 'waiting_for_roll' && (
-        <Button onClick={() => sendAction({ type: 'roll_dice' })}>🎲 Tung xúc xắc</Button>
-      )}
-      {isMyTurn && gameState.phase === 'buy_decision' && prop && (
-        <>
-          <Button onClick={() => sendAction({ type: 'buy_property' })}>Mua ${prop.price}</Button>
-          <Button variant="secondary" onClick={() => sendAction({ type: 'skip_buy' })}>Bỏ qua</Button>
-        </>
-      )}
-      {isMyTurn && gameState.phase === 'jail_decision' && (
-        <>
-          <Button onClick={() => sendAction({ type: 'pay_jail_fine' })}>Trả $50</Button>
-          <Button variant="secondary" onClick={() => sendAction({ type: 'use_jail_card' })}>Dùng thẻ</Button>
-          <Button variant="secondary" onClick={() => sendAction({ type: 'roll_for_doubles' })}>Tung đôi</Button>
-        </>
-      )}
-      {userId === gameState.hostId && (
-        <Button variant="danger" onClick={() => sendAction({ type: 'end_game' })}>Kết thúc ván</Button>
-      )}
+    <div className="sticky bottom-0 z-30 bg-white/95 backdrop-blur-md border-t border-[#1B5E20]/10 shadow-[0_-4px_24px_rgba(27,94,32,0.08)] px-4 py-4">
+      <div className="max-w-4xl mx-auto flex flex-wrap gap-2 justify-center items-center">
+        {!isMyTurn && (
+          <p className="text-sm text-gray-500 w-full text-center py-1">
+            ⏳ Đang chờ <span className="font-semibold text-gray-700">{current?.displayName}</span>...
+          </p>
+        )}
+        {isMyTurn && gameState.phase === 'waiting_for_roll' && (
+          <Button
+            onClick={() => sendAction({ type: 'roll_dice' })}
+            className="px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-shadow"
+          >
+            🎲 Tung xúc xắc
+          </Button>
+        )}
+        {isMyTurn && gameState.phase === 'buy_decision' && prop && (
+          <>
+            <Button
+              onClick={() => sendAction({ type: 'buy_property' })}
+              className="px-5 py-3 rounded-xl font-semibold shadow-md"
+            >
+              🏠 Mua ${prop.price}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => sendAction({ type: 'skip_buy' })}
+              className="px-5 py-3 rounded-xl font-semibold"
+            >
+              Bỏ qua
+            </Button>
+          </>
+        )}
+        {isMyTurn && gameState.phase === 'jail_decision' && (
+          <>
+            <Button
+              onClick={() => sendAction({ type: 'pay_jail_fine' })}
+              className="px-4 py-3 rounded-xl font-semibold"
+            >
+              💵 Trả $50
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => sendAction({ type: 'use_jail_card' })}
+              className="px-4 py-3 rounded-xl font-semibold"
+            >
+              🎫 Dùng thẻ
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => sendAction({ type: 'roll_for_doubles' })}
+              className="px-4 py-3 rounded-xl font-semibold"
+            >
+              🎲 Tung đôi
+            </Button>
+          </>
+        )}
+        {userId === gameState.hostId && (
+          <Button
+            variant="danger"
+            onClick={() => sendAction({ type: 'end_game' })}
+            className="px-4 py-3 rounded-xl font-semibold opacity-90 hover:opacity-100"
+          >
+            Kết thúc ván
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

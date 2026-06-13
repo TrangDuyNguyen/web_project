@@ -1,12 +1,12 @@
 import type { GameState } from '@/types/game';
 import { PlayerCard } from './PlayerCard';
+import { Panel } from '@/components/ui/Panel';
 
 type Props = { state: GameState };
 
 export function PlayerList({ state }: Props) {
   return (
-    <div className="space-y-2">
-      <h3 className="font-semibold text-sm text-gray-700">Người chơi</h3>
+    <Panel title="Người chơi" icon="👥" bodyClassName="space-y-2">
       {state.players.map((p, i) => (
         <PlayerCard
           key={p.id}
@@ -15,6 +15,6 @@ export function PlayerList({ state }: Props) {
           isHost={p.id === state.hostId}
         />
       ))}
-    </div>
+    </Panel>
   );
 }

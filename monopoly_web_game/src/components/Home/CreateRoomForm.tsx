@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
+import { ColorPicker } from '@/components/ui/ColorPicker';
+import { FieldLabel, GameCard, inputClassName } from '@/components/ui/GameCard';
 import { PLAYER_COLORS } from '@/game/rules/constants';
 
 export function CreateRoomForm() {
@@ -50,46 +52,78 @@ export function CreateRoomForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-xl p-6 shadow-md space-y-4">
-      <h2 className="text-lg font-semibold">Tạo phòng</h2>
-      <input
-        className="w-full border rounded-lg px-3 py-2"
-        placeholder="Tên của bạn"
-        value={displayName}
-        onChange={(e) => setDisplayName(e.target.value)}
-        required
-      />
-      <div className="flex gap-2">
-        {PLAYER_COLORS.map((c) => (
-          <button
-            key={c}
-            type="button"
-            className={`w-8 h-8 rounded-full border-2 ${color === c ? 'border-black' : 'border-transparent'}`}
-            style={{ backgroundColor: c }}
-            onClick={() => setColor(c)}
+    <form onSubmit={handleSubmit} className="h-full flex flex-col">
+      <GameCard icon="🏠" title="Tạo phòng" subtitle="Mời bạn bè vào phòng mới">
+        <div>
+          <FieldLabel>Tên hiển thị</FieldLabel>
+          <input
+            className={inputClassName}
+            placeholder="Tên của bạn trong ván"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            required
           />
-        ))}
-      </div>
-      <div className="flex gap-4 text-sm">
-        <label className="flex items-center gap-1">
-          <input type="radio" checked={visibility === 'private'} onChange={() => setVisibility('private')} />
-          Riêng
-        </label>
-        <label className="flex items-center gap-1">
-          <input type="radio" checked={visibility === 'public'} onChange={() => setVisibility('public')} />
-          Công khai
-        </label>
-      </div>
-      <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" checked={useRoundLimit} onChange={(e) => setUseRoundLimit(e.target.checked)} />
-        Giới hạn vòng
-        {useRoundLimit && (
-          <input type="number" min={5} max={100} value={roundLimit} onChange={(e) => setRoundLimit(Number(e.target.value))} className="w-16 border rounded px-2" />
-        )}
-      </label>
-      <Button type="submit" disabled={loading} className="w-full">
-        {loading ? 'Đang tạo...' : 'Tạo phòng'}
-      </Button>
+        </div>
+
+        <ColorPicker colors={PLAYER_COLORS} value={color} onChange={setColor} />
+
+        <div>
+          <FieldLabel>Loại phòng</FieldLabel>
+          <div className="flex rounded-xl bg-gray-100 p-1 gap-1">
+            <button
+              type="button"
+              onClick={() => setVisibility('private')}
+              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                visibility === 'private'
+                  ? 'bg-white shadow-sm text-[#1B5E20]'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              🔒 Riêng tư
+            </button>
+            <button
+              type="button"
+              onClick={() => setVisibility('public')}
+              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                visibility === 'public'
+                  ? 'bg-white shadow-sm text-[#1B5E20]'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              🌐 Công khai
+            </button>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-gray-100 bg-gray-50/60 px-4 py-3">
+          <label className="flex items-center gap-2.5 text-sm cursor-pointer">
+            <input
+              type="checkbox"
+              checked={useRoundLimit}
+              onChange={(e) => setUseRoundLimit(e.target.checked)}
+              className="rounded border-gray-300 text-[#1B5E20] focus:ring-[#1B5E20]"
+            />
+            <span className="font-medium text-gray-700">Giới hạn số vòng</span>
+          </label>
+          {useRoundLimit && (
+            <div className="mt-3 flex items-center gap-2">
+              <input
+                type="number"
+                min={5}
+                max={100}
+                value={roundLimit}
+                onChange={(e) => setRoundLimit(Number(e.target.value))}
+                className="w-20 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B5E20]/25"
+              />
+              <span className="text-sm text-gray-500">vòng</span>
+            </div>
+          )}
+        </div>
+
+        <Button type="submit" disabled={loading} className="w-full mt-auto py-3 rounded-xl font-semibold">
+          {loading ? 'Đang tạo phòng...' : 'Tạo phòng →'}
+        </Button>
+      </GameCard>
     </form>
   );
 }
