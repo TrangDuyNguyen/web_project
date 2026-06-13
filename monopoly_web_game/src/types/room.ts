@@ -12,7 +12,6 @@ export type RoomSummary = {
 };
 
 export type ClientMessage =
-  | { type: 'join'; guestId: string; displayName: string; color: string }
   | { type: 'start_game' }
   | { type: 'roll_dice' }
   | { type: 'buy_property' }
@@ -38,18 +37,10 @@ export type ServerMessage =
   | { type: 'game_ended'; rankings: PlayerRanking[] }
   | { type: 'lobby_sync'; rooms: RoomSummary[] };
 
-export type GuestInfo = {
-  guestId: string;
-  displayName: string;
-  color: string;
-};
-
 export type CreateRoomRequest = {
   visibility: RoomVisibility;
   maxPlayers: number;
   roundLimit?: number;
-  hostName?: string;
-  hostColor?: string;
 };
 
 export type CreateRoomResponse = {

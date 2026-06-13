@@ -26,9 +26,9 @@ export function createWaitingState(
   };
 }
 
-export function createPlayer(guestId: string, displayName: string, color: string): Player {
+export function createPlayer(userId: string, displayName: string, color: string): Player {
   return {
-    id: guestId,
+    id: userId,
     displayName,
     color,
     money: STARTING_MONEY,
