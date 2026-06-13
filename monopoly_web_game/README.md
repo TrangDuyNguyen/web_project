@@ -62,6 +62,13 @@ Set environment variables in Vercel dashboard:
 2. Create room → join from second browser/incognito
 3. Start game → roll dice
 
+## Production URLs
+
+| Service | URL |
+|---|---|
+| **App (Vercel)** | https://monopolywebgame.vercel.app |
+| **Game server (PartyKit)** | `monopoly-game.trangduynguyen.partykit.dev` |
+
 ## Docs
 
 - Design spec: `docs/superpowers/specs/2026-06-09-monopoly-web-game-design.md`
