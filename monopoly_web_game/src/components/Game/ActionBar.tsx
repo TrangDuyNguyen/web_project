@@ -6,11 +6,11 @@ import { PROPERTY_BY_POSITION } from '@/data/properties';
 import { TILE_BY_POSITION } from '@/data/board';
 
 export function ActionBar() {
-  const { gameState, guestId, sendAction } = useGameStore();
+  const { gameState, userId, sendAction } = useGameStore();
   if (!gameState || gameState.gameStatus !== 'playing') return null;
 
   const current = gameState.players[gameState.currentPlayerIndex];
-  const isMyTurn = current?.id === guestId && current?.connection === 'online';
+  const isMyTurn = current?.id === userId && current?.connection === 'online';
 
   const tile = current ? TILE_BY_POSITION[current.position] : null;
   const prop = tile?.propertyId ? PROPERTY_BY_POSITION[current.position] : null;
@@ -38,7 +38,7 @@ export function ActionBar() {
           <Button variant="secondary" onClick={() => sendAction({ type: 'roll_for_doubles' })}>Tung đôi</Button>
         </>
       )}
-      {guestId === gameState.hostId && (
+      {userId === gameState.hostId && (
         <Button variant="danger" onClick={() => sendAction({ type: 'end_game' })}>Kết thúc ván</Button>
       )}
     </div>

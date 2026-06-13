@@ -2,14 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
 import type { RoomSummary } from '@/types/room';
 import { PLAYER_COLORS } from '@/game/rules/constants';
-import { useGuestId } from '@/hooks/useGuestId';
 
 export default function LobbyPage() {
   const [rooms, setRooms] = useState<RoomSummary[]>([]);
-  useGuestId();
+  const router = useRouter();
+  const { data: session } = useSession();
 
   useEffect(() => {
     const host = process.env.NEXT_PUBLIC_PARTYKIT_HOST ?? 'localhost:1999';
@@ -23,9 +25,9 @@ export default function LobbyPage() {
   }, []);
 
   function joinRoom(roomId: string) {
-    const name = prompt('Nhập tên của bạn:') ?? 'Khách';
-    sessionStorage.setItem(`room_${roomId}`, JSON.stringify({ displayName: name, color: PLAYER_COLORS[2], visibility: 'public' }));
-    window.location.href = `/game/${roomId}`;
+    const name = session?.user?.name ?? prompt('Nhập tên của bạn:') ?? 'Khách';
+    const params = new URLSearchParams({ name, color: PLAYER_COLORS[2] });
+    router.push(`/game/${roomId}?${params}`);
   }
 
   return (

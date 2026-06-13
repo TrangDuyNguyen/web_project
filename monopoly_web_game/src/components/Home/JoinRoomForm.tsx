@@ -1,23 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
 import { PLAYER_COLORS } from '@/game/rules/constants';
-import { useGuestId } from '@/hooks/useGuestId';
 
 export function JoinRoomForm() {
   const router = useRouter();
-  const guestId = useGuestId();
+  const { data: session } = useSession();
   const [roomCode, setRoomCode] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [color, setColor] = useState<string>(PLAYER_COLORS[1]);
 
+  useEffect(() => {
+    if (session?.user?.name && !displayName) {
+      setDisplayName(session.user.name);
+    }
+  }, [session?.user?.name, displayName]);
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!roomCode.trim() || !displayName.trim()) return;
-    sessionStorage.setItem(`join_${roomCode.toUpperCase()}`, JSON.stringify({ displayName, color, guestId }));
-    router.push(`/game/${roomCode.toUpperCase()}?join=true`);
+    const code = roomCode.toUpperCase();
+    const params = new URLSearchParams({ name: displayName.trim(), color });
+    router.push(`/game/${code}?${params}`);
   }
 
   return (
