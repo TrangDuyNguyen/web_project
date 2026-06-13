@@ -7,8 +7,16 @@ export function ConnectionStatus() {
   if (connectionStatus === 'connected') return null;
 
   return (
-    <div className={`text-center py-2 text-sm ${connectionStatus === 'connecting' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'}`}>
-      {connectionStatus === 'connecting' ? 'Đang kết nối...' : 'Mất kết nối — đang thử kết nối lại...'}
+    <div
+      className={`text-center py-2.5 text-sm font-medium ${
+        connectionStatus === 'connecting'
+          ? 'bg-blue-50 text-blue-700 border-b border-blue-100'
+          : 'bg-amber-50 text-amber-800 border-b border-amber-100'
+      }`}
+    >
+      {connectionStatus === 'connecting'
+        ? '🔄 Đang kết nối phòng...'
+        : '⚠️ Mất kết nối — đang thử kết nối lại...'}
     </div>
   );
 }

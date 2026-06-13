@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
+import { ColorPicker } from '@/components/ui/ColorPicker';
+import { FieldLabel, GameCard, inputClassName } from '@/components/ui/GameCard';
 import { PLAYER_COLORS } from '@/game/rules/constants';
 
 export function JoinRoomForm() {
@@ -28,35 +30,41 @@ export function JoinRoomForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-xl p-6 shadow-md space-y-4">
-      <h2 className="text-lg font-semibold">Vào phòng</h2>
-      <input
-        className="w-full border rounded-lg px-3 py-2 uppercase"
-        placeholder="Mã phòng (6 ký tự)"
-        maxLength={6}
-        value={roomCode}
-        onChange={(e) => setRoomCode(e.target.value)}
-        required
-      />
-      <input
-        className="w-full border rounded-lg px-3 py-2"
-        placeholder="Tên của bạn"
-        value={displayName}
-        onChange={(e) => setDisplayName(e.target.value)}
-        required
-      />
-      <div className="flex gap-2">
-        {PLAYER_COLORS.map((c) => (
-          <button
-            key={c}
-            type="button"
-            className={`w-8 h-8 rounded-full border-2 ${color === c ? 'border-black' : 'border-transparent'}`}
-            style={{ backgroundColor: c }}
-            onClick={() => setColor(c)}
+    <form onSubmit={handleSubmit} className="h-full flex flex-col">
+      <GameCard icon="🚪" title="Vào phòng" subtitle="Nhập mã phòng từ bạn bè">
+        <div>
+          <FieldLabel>Mã phòng</FieldLabel>
+          <input
+            className={`${inputClassName} uppercase tracking-[0.2em] font-mono text-center text-base`}
+            placeholder="ABC123"
+            maxLength={6}
+            value={roomCode}
+            onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+            required
           />
-        ))}
-      </div>
-      <Button type="submit" className="w-full">Tham gia</Button>
+        </div>
+
+        <div>
+          <FieldLabel>Tên hiển thị</FieldLabel>
+          <input
+            className={inputClassName}
+            placeholder="Tên của bạn trong ván"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            required
+          />
+        </div>
+
+        <ColorPicker colors={PLAYER_COLORS} value={color} onChange={setColor} />
+
+        <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50/40 px-4 py-3 text-xs text-gray-500 text-center">
+          Hỏi host lấy mã 6 ký tự để tham gia
+        </div>
+
+        <Button type="submit" className="w-full mt-auto py-3 rounded-xl font-semibold">
+          Tham gia phòng →
+        </Button>
+      </GameCard>
     </form>
   );
 }
