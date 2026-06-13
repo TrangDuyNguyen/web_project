@@ -1,5 +1,7 @@
 # Phase 2: OAuth Authentication Implementation Plan
 
+> **Status:** ✅ **Complete** (2026-06-13) — merged via [PR #3](https://github.com/TrangDuyNguyen/web_project/pull/3), [PR #5](https://github.com/TrangDuyNguyen/web_project/pull/5), [PR #6](https://github.com/TrangDuyNguyen/web_project/pull/6)
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Replace guest identity with mandatory OAuth login (Google, GitHub, Facebook) and short-lived WebSocket JWTs so join room, host authority, and reconnect work reliably.
@@ -1361,5 +1363,9 @@ git commit -m "docs: add Phase 2 OAuth setup and deploy instructions"
 - [x] Only room creator can start game
 - [x] Reconnect restores slot by userId
 - [x] Public lobby works with auth
-- [x] `npm run test` green
-- [x] Production deploy with OAuth apps configured
+- [x] `npm run test` green (32/32)
+- [x] Production deploy with OAuth apps configured (Google, GitHub, Facebook)
+- [x] `npm run verify:phase2` green (12/12 automated checks)
+- [x] Guest identity fully removed (`useGuestId`, legacy types)
+- [x] Token re-mint on WebSocket `UNAUTHORIZED`
+- [x] Login UI shows only configured OAuth providers

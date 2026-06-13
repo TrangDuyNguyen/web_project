@@ -1,7 +1,7 @@
 # Monopoly Web Game — Phase 2: Authentication Design Spec
 
 **Date:** 2026-06-09  
-**Status:** Approved (brainstorming session)  
+**Status:** ✅ Complete (2026-06-13, [PR #6](https://github.com/TrangDuyNguyen/web_project/pull/6))  
 **Depends on:** [MVP Design Spec](./2026-06-09-monopoly-web-game-design.md)  
 **Goal:** Replace guest identity with mandatory OAuth login to fix join room, host authority, and reconnect mechanics.
 
@@ -422,12 +422,13 @@ https://monopolywebgame.vercel.app/api/auth/callback/facebook
 
 ## 16. Success Criteria
 
-| # | Criterion |
-|---|---|
-| 1 | Cannot access game without OAuth login |
-| 2 | Two different OAuth accounts can join same room from same machine |
-| 3 | Host authority stable — only room creator can start game |
-| 4 | Reconnect restores player slot by OAuth identity |
-| 5 | Public lobby works with authenticated users |
-| 6 | All existing engine tests pass |
-| 7 | Production deploy with all 3 OAuth providers configured |
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Cannot access game without OAuth login | ✅ |
+| 2 | Two different OAuth accounts can join same room from same machine | ✅ |
+| 3 | Host authority stable — only room creator can start game | ✅ |
+| 4 | Reconnect restores player slot by OAuth identity | ✅ |
+| 5 | Public lobby works with authenticated users | ✅ |
+| 6 | All existing engine tests pass | ✅ (32/32) |
+| 7 | Production deploy with all 3 OAuth providers configured | ✅ |
+| 8 | Automated verification suite (`npm run verify:phase2`) | ✅ (12/12) |

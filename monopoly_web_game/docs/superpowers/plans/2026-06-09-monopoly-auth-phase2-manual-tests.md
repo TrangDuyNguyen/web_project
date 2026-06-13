@@ -1,5 +1,6 @@
 # Phase 2 — Manual & Automated Test Cases
 
+**Status:** ✅ Complete — automated 12/12 pass; manual OAuth flows verified on production  
 **App:** https://monopolywebgame.vercel.app  
 **PartyKit:** `monopoly-game.trangduynguyen.partykit.dev`  
 **Date:** 2026-06-13
