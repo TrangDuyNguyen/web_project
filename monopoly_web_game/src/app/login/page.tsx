@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import { OAuthButtons } from '@/components/auth/OAuthButtons';
 import { BoardPattern } from '@/components/ui/BoardPattern';
+import { getEnabledOAuthProviders } from '@/lib/authProviders';
 
 type Props = { searchParams: Promise<{ callbackUrl?: string }> };
 
 export default async function LoginPage({ searchParams }: Props) {
   const { callbackUrl } = await searchParams;
+  const enabledProviders = getEnabledOAuthProviders();
 
   return (
     <div className="relative min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-4 py-10">
@@ -32,7 +34,7 @@ export default async function LoginPage({ searchParams }: Props) {
               <p className="text-sm text-gray-500">Chọn tài khoản của bạn</p>
             </div>
 
-            <OAuthButtons callbackUrl={callbackUrl ?? '/'} />
+            <OAuthButtons callbackUrl={callbackUrl ?? '/'} enabledProviders={enabledProviders} />
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">

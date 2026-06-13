@@ -173,8 +173,6 @@ export default class GameServer implements Party.Server {
     const userId = (sender.state as { userId?: string })?.userId ?? '';
     const msg = JSON.parse(raw) as ClientMessage;
 
-    if (msg.type === 'join') return;
-
     const engineAction = msg.type === 'leave'
       ? null
       : { type: msg.type } as Parameters<typeof applyAction>[1];

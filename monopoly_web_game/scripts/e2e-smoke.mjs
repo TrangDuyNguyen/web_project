@@ -12,7 +12,7 @@ const httpProtocol = PK.startsWith('localhost') ? 'http' : 'https';
 
 const roomId = crypto.randomUUID().slice(0, 6).toUpperCase();
 const hostUserId = 'google:host-smoke-test';
-const guestUserId = 'github:guest-smoke-test';
+const joinUserId = 'github:join-smoke-test';
 
 async function mintToken({ sub, displayName, color, isHost }) {
   const key = new TextEncoder().encode(SECRET);
@@ -52,7 +52,7 @@ function connect(userId, name, color, isHost) {
 
 const host = await connect(hostUserId, 'Host', '#EF4444', true);
 await new Promise((r) => setTimeout(r, 800));
-const guest = await connect(guestUserId, 'Guest', '#3B82F6', false);
+const guest = await connect(joinUserId, 'Guest', '#3B82F6', false);
 await new Promise((r) => setTimeout(r, 800));
 
 host.ws.send(JSON.stringify({ type: 'start_game' }));

@@ -1356,10 +1356,10 @@ git commit -m "docs: add Phase 2 OAuth setup and deploy instructions"
 
 ## Success Criteria (from spec)
 
-- [ ] Cannot access game without OAuth login
-- [ ] Two OAuth accounts join same room from same machine
-- [ ] Only room creator can start game
-- [ ] Reconnect restores slot by userId
-- [ ] Public lobby works with auth
-- [ ] `npm run test` green
-- [ ] Production deploy with OAuth apps configured
+- [x] Cannot access game without OAuth login
+- [x] Two OAuth accounts join same room from same machine
+- [x] Only room creator can start game
+- [x] Reconnect restores slot by userId
+- [x] Public lobby works with auth
+- [x] `npm run test` green
+- [x] Production deploy with OAuth apps configured

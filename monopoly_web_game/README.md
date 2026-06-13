@@ -2,9 +2,12 @@
 
 Game Cờ Tỷ Phú trên trình duyệt — 2–4 người chơi online realtime.
 
+**Phase 2:** Bắt buộc đăng nhập OAuth (Google, GitHub, Facebook). Chế độ guest đã bỏ.
+
 ## Tech Stack
 
 - Next.js 16 + TypeScript + Tailwind CSS
+- Auth.js v5 + jose (OAuth + WebSocket JWT)
 - Zustand + Framer Motion
 - PartyKit (WebSocket game server)
 - Vitest (game engine tests)
@@ -26,7 +29,7 @@ Copy `.env.local.example` to `.env.local` and fill in OAuth credentials.
 
 ## Authentication (Phase 2)
 
-Login required via OAuth (Google, GitHub, Facebook). Configure in `.env.local`:
+Login required via OAuth. Configure in `.env.local`:
 
 ```
 AUTH_SECRET=<random-32+-chars>
@@ -44,7 +47,7 @@ OAuth redirect URIs (production):
 - `https://monopolywebgame.vercel.app/api/auth/callback/github`
 - `https://monopolywebgame.vercel.app/api/auth/callback/facebook`
 
-`AUTH_SECRET` must match on Vercel and PartyKit (`partykit.json` vars).
+`AUTH_SECRET` must match on **Vercel** and **PartyKit**.
 
 ## E2E Smoke Test
 
@@ -54,7 +57,13 @@ With PartyKit dev server running:
 npm run e2e:smoke
 ```
 
-Note: smoke test bypasses OAuth by signing JWTs directly (uses `AUTH_SECRET`).
+Smoke test bypasses OAuth by signing JWTs directly (uses `AUTH_SECRET`).
+
+Production:
+
+```bash
+AUTH_SECRET=<prod-secret> NEXT_PUBLIC_PARTYKIT_HOST=monopoly-game.<user>.partykit.dev npm run e2e:smoke
+```
 
 ## Deploy
 
@@ -65,6 +74,16 @@ npx partykit login          # first time only
 npm run partykit:deploy
 # Note the deployed host, e.g. monopoly-game.<user>.partykit.dev
 ```
+
+**Important:** `partykit.json` vars are for local dev only. Push secrets to PartyKit Cloud:
+
+```bash
+# Set AUTH_SECRET in partykit.json (or edit after pull), then:
+npx partykit env push
+npm run partykit:deploy
+```
+
+Verify: `npx partykit env list`
 
 ### 2. Vercel (frontend)
 
@@ -87,9 +106,11 @@ Set environment variables in Vercel dashboard:
 
 ### 3. Production smoke test
 
-1. Open deployed URL
-2. Create room → join from second browser/incognito
-3. Start game → roll dice
+1. Login via OAuth → create room
+2. Incognito / second browser with different OAuth account → join
+3. Host starts game → roll dice
+4. Public lobby: create public room → verify on `/lobby`
+5. Logout → redirect to `/login`
 
 ## Production URLs
 

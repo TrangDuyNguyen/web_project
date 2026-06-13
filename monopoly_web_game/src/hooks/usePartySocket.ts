@@ -79,7 +79,14 @@ export function usePartySocket(options: ConnectOptions | null) {
         ws.onmessage = (event) => {
           const msg = JSON.parse(event.data) as ServerMessage;
           if (msg.type === 'state_sync' && msg.state) setGameState(msg.state);
-          if (msg.type === 'error') addToast(msg.message, 'error');
+          if (msg.type === 'error') {
+            addToast(msg.message, 'error');
+            if (msg.code === 'UNAUTHORIZED') {
+              ws.close();
+              reconnectCountRef.current = 0;
+              reconnectTimerRef.current = setTimeout(connect, 500);
+            }
+          }
         };
       } catch {
         addToast('Không thể kết nối phòng', 'error');
